@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calisthenics — Lisi</title>
+<style>
+:root {
+  --bg: #0f0f0f;
+  --card: #1a1a2e;
+  --accent: #42a5f5;
+  --accent2: #1565c0;
+  --text: #eee;
+  --muted: #888;
+  --green: #4ecca3;
+  --yellow: #f0c040;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+header {
+  background: linear-gradient(135deg, var(--accent2), #0d47a1);
+  padding: 20px 16px 12px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+header h1 { font-size: 1.3em; margin-bottom: 4px; }
+header .subtitle { color: rgba(255,255,255,0.6); font-size: 0.85em; }
+.header-buttons {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin-top: 10px;
+}
+.phase-bar {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+.phase-bar button, .crono-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.6);
+  font-size: 0.8em;
+  cursor: pointer;
+}
+.phase-bar button.active {
+  background: var(--accent);
+  color: white;
+  font-weight: 600;
+}
+.crono-btn {
+  background: rgba(78,204,163,0.2);
+  color: var(--green);
+  font-weight: 600;
+  margin-left: 8px;
+}
+.tabs {
+  display: flex;
+  position: sticky;
+  top: 90px;
+  z-index: 99;
+  background: var(--bg);
+}
+.tabs button {
+  flex: 1;
+  padding: 12px 4px;
+  border: none;
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 0.85em;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+}
+.tabs button.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.content { padding: 12px; max-width: 600px; margin: 0 auto; }
+.day-header {
+  text-align: center;
+  padding: 16px 0 8px;
+  color: var(--green);
+  font-size: 0.9em;
+}
+.exercise {
+  background: var(--card);
+  border-radius: 12px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.exercise-header {
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+.exercise-header h3 { font-size: 1em; font-weight: 600; }
+.exercise-header .badge {
+  font-size: 0.75em;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+.badge-phase1 { background: var(--green); color: #000; }
+.badge-phase2 { background: var(--yellow); color: #000; }
+.badge-phase3 { background: var(--accent); color: #fff; }
+.exercise-body { display: none; padding: 0 16px 16px; }
+.exercise.open .exercise-body { display: block; }
+.exercise.open .exercise-header { border-bottom: 1px solid rgba(255,255,255,0.05); }
+.exercise.done { border-left: 3px solid var(--green); }
+.exercise.done .exercise-header h3 { opacity: 0.5; text-decoration: line-through; }
+.check-btn {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--muted);
+  background: transparent;
+  color: transparent;
+  font-size: 16px;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  transition: all 0.2s;
+}
+.check-btn.checked {
+  border-color: var(--green);
+  background: var(--green);
+  color: #000;
+}
+.progress-bar {
+  background: rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 10px 16px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.progress-fill {
+  height: 6px;
+  background: var(--green);
+  border-radius: 3px;
+  transition: width 0.3s;
+}
+.progress-track {
+  flex: 1;
+  height: 6px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-text { font-size: 0.85em; color: var(--green); font-weight: 600; white-space: nowrap; }
+.history-box {
+  background: rgba(255,255,255,0.05);
+  border-radius: 8px;
+  padding: 10px 16px;
+  margin-bottom: 12px;
+  font-size: 0.8em;
+  color: var(--muted);
+}
+.video-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  background: #000;
+}
+.video-container iframe {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  border: none;
+}
+.video-placeholder {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #111;
+  cursor: pointer;
+}
+.video-placeholder img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0.7;
+}
+.play-btn {
+  position: absolute;
+  width: 60px; height: 60px;
+  background: rgba(66,165,245,0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.play-btn::after {
+  content: '';
+  border-left: 20px solid white;
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  margin-left: 4px;
+}
+.sets-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 12px;
+  font-size: 0.85em;
+}
+.sets-table th {
+  text-align: left;
+  padding: 6px 8px;
+  color: var(--muted);
+  font-weight: 500;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.sets-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.sets-table tr.current-phase td {
+  color: var(--green);
+  font-weight: 600;
+}
+.tips {
+  background: rgba(78,204,163,0.1);
+  border-left: 3px solid var(--green);
+  padding: 10px 12px;
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 8px;
+}
+.tips h4 { color: var(--green); font-size: 0.8em; margin-bottom: 4px; text-transform: uppercase; }
+.tips ul { list-style: none; font-size: 0.85em; line-height: 1.6; }
+.tips ul li::before { content: '\2713 '; color: var(--green); }
+.mistakes {
+  background: rgba(66,165,245,0.1);
+  border-left: 3px solid var(--accent);
+  padding: 10px 12px;
+  border-radius: 0 8px 8px 0;
+}
+.mistakes h4 { color: var(--accent); font-size: 0.8em; margin-bottom: 4px; text-transform: uppercase; }
+.mistakes ul { list-style: none; font-size: 0.85em; line-height: 1.6; }
+.mistakes ul li::before { content: '\2717 '; color: var(--accent); }
+.timer-section { text-align: center; padding: 20px 0; }
+.timer-btn {
+  padding: 12px 32px;
+  border: 2px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  border-radius: 24px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+}
+.timer-btn:active { background: var(--accent); color: white; }
+.timer-display {
+  font-size: 3em;
+  font-weight: 700;
+  color: var(--green);
+  margin: 16px 0;
+  font-variant-numeric: tabular-nums;
+  display: none;
+}
+.rest-info { text-align: center; color: var(--muted); font-size: 0.85em; padding: 8px; }
+.save-section { text-align: center; padding: 16px; }
+.save-btn {
+  padding: 14px 32px;
+  border: none;
+  border-radius: 24px;
+  background: var(--accent2);
+  color: white;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  width: 80%;
+  max-width: 300px;
+}
+.save-btn:active { background: var(--green); }
+.save-btn.saved { background: var(--green); }
+.save-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.save-msg { margin-top: 8px; font-size: 0.85em; min-height: 1.2em; }
+footer { text-align: center; padding: 24px; color: var(--muted); font-size: 0.75em; }
+
+/* Cronologia overlay */
+.crono-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: var(--bg);
+  z-index: 200;
+  overflow-y: auto;
+  display: none;
+}
+.crono-overlay.open { display: block; }
+.crono-header {
+  position: sticky; top: 0;
+  background: linear-gradient(135deg, var(--accent2), #0d47a1);
+  padding: 20px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 201;
+}
+.crono-header h2 { font-size: 1.2em; }
+.crono-close {
+  background: none;
+  border: 2px solid rgba(255,255,255,0.5);
+  color: var(--text);
+  border-radius: 50%;
+  width: 36px; height: 36px;
+  font-size: 1.2em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.crono-content { padding: 16px; max-width: 600px; margin: 0 auto; }
+.crono-date {
+  color: var(--green);
+  font-weight: 600;
+  font-size: 0.95em;
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.crono-day { margin-bottom: 20px; }
+.crono-entry {
+  background: var(--card);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+}
+.crono-entry-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.crono-type { font-weight: 600; font-size: 0.9em; }
+.crono-score { font-size: 0.85em; font-weight: 600; }
+.crono-meta { font-size: 0.75em; color: var(--muted); margin-bottom: 4px; }
+.crono-exercises { font-size: 0.8em; color: var(--muted); line-height: 1.5; }
+.crono-empty { text-align: center; padding: 60px 16px; color: var(--muted); font-size: 1.1em; }
+.crono-stats {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+}
+.crono-stat-num { font-size: 1.8em; font-weight: 700; color: var(--accent); }
+.crono-stat-label { font-size: 0.75em; color: var(--muted); margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Calisthenics — Lisi</h1>
+  <div class="subtitle">Allenamento a corpo libero</div>
+  <div class="header-buttons">
+    <div class="phase-bar">
+      <button class="active" onclick="setPhase(1)">Fase 1</button>
+      <button onclick="setPhase(2)">Fase 2</button>
+      <button onclick="setPhase(3)">Fase 3+</button>
+    </div>
+    <button class="crono-btn" onclick="openCronologia()">Cronologia</button>
+  </div>
+</header>
+
+<div class="tabs">
+  <button class="active" onclick="showTab('upper')">Lun — Upper</button>
+  <button onclick="showTab('full')">Gio — Full Body</button>
+  <button onclick="showTab('stretch_upper')">Stretch Upper</button>
+  <button onclick="showTab('stretch_full')">Stretch Lower</button>
+</div>
+
+<div class="content" id="content"></div>
+
+<div class="timer-section">
+  <div class="rest-info">Recupero tra le serie: 60-90 secondi</div>
+  <div class="timer-display" id="timerDisplay">01:00</div>
+  <button class="timer-btn" id="timerBtn" onclick="toggleTimer()">Recupero 60s</button>
+</div>
+
+<div class="save-section">
+  <button class="save-btn" id="saveBtn" onclick="saveWorkout()">Salva allenamento</button>
+  <div class="save-msg" id="saveMsg"></div>
+</div>
+
+<footer>Calisthenics App — Lisi</footer>
+
+<!-- Cronologia overlay -->
+<div class="crono-overlay" id="cronoOverlay">
+  <div class="crono-header">
+    <h2>Cronologia — Lisi</h2>
+    <button class="crono-close" onclick="closeCronologia()">&times;</button>
+  </div>
+  <div class="crono-content" id="cronoContent"></div>
+</div>
+
+<script>
+const STORAGE_PREFIX = 'calisthenics_lisi_';
+const USER_NAME = 'lisi';
+
+const EXERCISES = {
+  upper: [
+    {
+      name: 'Push-up',
+      video: 'UVlAUEgIzGQ',
+      phases: [
+        { label: 'Fase 1 (sett 1-5)', sets: '3×8 ginocchia' },
+        { label: 'Fase 2 (sett 6-12)', sets: '3×12 normali' },
+        { label: 'Fase 3+ (sett 13+)', sets: '3×10 diamante' },
+      ],
+      tips: ['Mani larghe quanto le spalle, dita in avanti','Corpo rigido come una tavola: glutei e addome contratti','Scendi fino a sfiorare il pavimento col petto','Gomiti a 45° dal corpo, non aperti a 90°'],
+      mistakes: ['Bacino che crolla verso il basso (iperestensione lombare)','Sedere in alto (posizione a tenda)','Escursione parziale — scendi completamente','Testa che guarda avanti (cervicale in estensione)'],
+    },
+    {
+      name: 'Dip su panca',
+      video: 'BOvodWHyjJ4',
+      phases: [
+        { label: 'Fase 1', sets: '3×8 su panca' },
+        { label: 'Fase 2', sets: '3×10 profondo' },
+        { label: 'Fase 3+', sets: '3×8 parallele' },
+      ],
+      tips: ['Mani sulla panca, dita in avanti, larghezza spalle','Scendi finché i gomiti sono a 90°','Tieni i gomiti stretti, non aprirli','Piedi a terra (base) poi distesi (avanzato)'],
+      mistakes: ['Spalle che salgono alle orecchie','Gomiti che si aprono lateralmente','Scendere troppo (stress sulla spalla)','Usare lo slancio per risalire'],
+    },
+    {
+      name: 'Trazioni orizzontali (Australian)',
+      video: '4Rhm1y-AYPI',
+      phases: [
+        { label: 'Fase 1', sets: '3×8 australian (tavolo)' },
+        { label: 'Fase 2', sets: '3×10 piedi alti' },
+        { label: 'Fase 3+', sets: '3×6 alla sbarra (assist.)' },
+      ],
+      tips: ['Corpo rigido e dritto dalla testa ai piedi','Tira portando il petto alla sbarra/tavolo','Stringi le scapole alla fine del movimento','Presa salda, mani larghe quanto le spalle'],
+      mistakes: ['Bacino che crolla (corpo non allineato)','Non completare il movimento — arriva al petto','Tirare solo con le braccia senza attivare la schiena','Testa che va avanti per raggiungere la sbarra'],
+    },
+    {
+      name: 'Pike push-up',
+      video: 'CDBKxS-a4qQ',
+      phases: [
+        { label: 'Fase 1', sets: '3×6' },
+        { label: 'Fase 2', sets: '3×10' },
+        { label: 'Fase 3+', sets: '3×8 piedi su rialzo' },
+      ],
+      tips: ['Posizione a V invertita: sedere in alto','Testa scende tra le mani verso il pavimento','Gomiti puntano indietro, non ai lati','Simula un military press a corpo libero'],
+      mistakes: ['Trasformarlo in un push-up normale (corpo troppo piatto)','Non scendere abbastanza con la testa','Gomiti che si aprono lateralmente','Scaricare il peso sulle gambe invece che sulle spalle'],
+    },
+    {
+      name: 'Plank frontale',
+      video: 'aJOB8LwFPY8',
+      phases: [
+        { label: 'Fase 1', sets: '3×30 secondi' },
+        { label: 'Fase 2', sets: '3×45 secondi' },
+        { label: 'Fase 3+', sets: '3×60 secondi' },
+      ],
+      tips: ['Gomiti sotto le spalle, avambracci paralleli','Corpo dritto: immagina una linea testa-talloni','Addome contratto, glutei attivi','Respira normalmente, non trattenere il fiato'],
+      mistakes: ['Bacino che crolla (mal di schiena)','Sedere troppo alto (perdita di tensione)','Guardare avanti (cervicale in estensione) — guarda il pavimento','Spalle che salgono verso le orecchie'],
+    },
+    {
+      name: 'Plank laterale',
+      video: 'sC7Xv0YieTg',
+      phases: [
+        { label: 'Fase 1', sets: '2×20s per lato' },
+        { label: 'Fase 2', sets: '3×30s per lato' },
+        { label: 'Fase 3+', sets: '3×40s per lato' },
+      ],
+      tips: ['Gomito sotto la spalla, corpo allineato','Bacino alto: non lasciar cadere il fianco','Piedi sovrapposti o sfalsati per stabilità','Braccio libero lungo il fianco o verso il soffitto'],
+      mistakes: ['Bacino che crolla verso il basso','Ruotare il corpo in avanti o indietro','Gomito non allineato sotto la spalla (stress articolare)','Trattenere il respiro'],
+    },
+    {
+      name: 'Dead bug',
+      video: 'BYfbqaSJfZs',
+      phases: [
+        { label: 'Fase 1', sets: '3×8' },
+        { label: 'Fase 2', sets: '3×12' },
+        { label: 'Fase 3+', sets: '3×15' },
+      ],
+      tips: ['Schiena completamente aderente al pavimento','Movimento lento e controllato (3 secondi per lato)','Braccio opposto e gamba opposta si estendono insieme','Espira mentre estendi, inspira tornando'],
+      mistakes: ['Schiena che si inarca (si stacca dal pavimento)','Movimento troppo veloce (usa lo slancio)','Trattenere il respiro','Non estendere completamente braccio e gamba'],
+    },
+  ],
+  full: [
+    {
+      name: 'Squat',
+      video: 'O3q4X0apJuo',
+      phases: [
+        { label: 'Fase 1', sets: '3×12 corpo libero' },
+        { label: 'Fase 2', sets: '3×15 + pausa 3s in basso' },
+        { label: 'Fase 3+', sets: '3×10 bulgaro (su panca)' },
+      ],
+      tips: ['Piedi larghezza spalle, punte leggermente ruotate fuori','Scendi come se ti sedessi su una sedia invisibile','Ginocchia in linea con le punte dei piedi','Peso distribuito su tutto il piede (non solo punte)'],
+      mistakes: ['Ginocchia che collassano verso l\'interno','Talloni che si alzano dal pavimento','Schiena che si arrotonda (perdita curva lombare)','Non scendere abbastanza (almeno parallelo)'],
+    },
+    {
+      name: 'Affondi',
+      video: 'q0bPal9Hzrw',
+      phases: [
+        { label: 'Fase 1', sets: '3×8 per gamba' },
+        { label: 'Fase 2', sets: '3×12 per gamba' },
+        { label: 'Fase 3+', sets: '3×10 jumping lunges' },
+      ],
+      tips: ['Passo lungo: ginocchio posteriore sfiora il pavimento','Ginocchio anteriore a 90°, non oltre la punta del piede','Busto eretto, sguardo in avanti','Spingi col tallone del piede anteriore per risalire'],
+      mistakes: ['Passo troppo corto (ginocchio oltre la punta)','Busto che si piega in avanti','Ginocchio posteriore che sbatte a terra','Perdita di equilibrio laterale — stringi il core'],
+    },
+    {
+      name: 'Ponte glutei',
+      video: '6Ee51lGlQFE',
+      phases: [
+        { label: 'Fase 1', sets: '3×12' },
+        { label: 'Fase 2', sets: '3×15 singola gamba' },
+        { label: 'Fase 3+', sets: '3×12 singola + pausa' },
+      ],
+      tips: ['Piedi a terra, ginocchia piegate a 90°','Spingi i talloni e solleva il bacino fino ad allineare ginocchia-bacino-spalle','Contrai i glutei al massimo in alto (2 secondi)','Scendi lentamente, non lasciarti cadere'],
+      mistakes: ['Iperestensione lombare (spingi troppo in alto)','Usare la schiena invece dei glutei','Piedi troppo vicini o troppo lontani','Movimento troppo veloce senza contrarre in alto'],
+    },
+    {
+      name: 'Bird-dog',
+      video: 'Os6As6dIYpE',
+      phases: [
+        { label: 'Fase 1', sets: '3×8 per lato' },
+        { label: 'Fase 2', sets: '3×12 per lato' },
+        { label: 'Fase 3+', sets: '3×15 per lato' },
+      ],
+      tips: ['Posizione quadrupedica: mani sotto le spalle, ginocchia sotto le anche','Estendi braccio e gamba opposti lentamente','Mantieni la schiena piatta (un bicchiere d\'acqua non deve cadere)','Tieni 2 secondi in estensione completa'],
+      mistakes: ['Ruotare il bacino quando estendi la gamba','Inarcare la schiena (perdita di controllo del core)','Movimento troppo rapido','Non allineare braccio-schiena-gamba in linea retta'],
+    },
+    {
+      name: 'Hollow body hold',
+      video: 'uiGAkaRMg8U',
+      phases: [
+        { label: 'Fase 1', sets: '3×15 secondi' },
+        { label: 'Fase 2', sets: '3×25 secondi' },
+        { label: 'Fase 3+', sets: '3×35 secondi' },
+      ],
+      tips: ['Schiena bassa premuta al pavimento (nessun arco)','Braccia e gambe stese, sollevate da terra','Mento al petto, sguardo verso le ginocchia','Se troppo difficile: piega le ginocchia o tieni le braccia lungo i fianchi'],
+      mistakes: ['Schiena che si inarca (si vede spazio sotto la lombare)','Trattenere il respiro — respira costantemente','Gambe troppo alte (più sono basse, più è difficile)','Collo in tensione — rilassalo, il mento guida'],
+    },
+    {
+      name: 'Superman',
+      video: 'DHH2DRufajA',
+      phases: [
+        { label: 'Fase 1', sets: '3×10' },
+        { label: 'Fase 2', sets: '3×15' },
+        { label: 'Fase 3+', sets: '3×12 con pausa 2s' },
+      ],
+      tips: ['Prono a terra, braccia distese in avanti','Solleva braccia e gambe contemporaneamente','Contrai glutei e lombari in alto','Mantieni 2 secondi, scendi lentamente'],
+      mistakes: ['Iperestensione cervicale (guardare troppo in alto)','Slancio con le braccia invece di usare i muscoli','Non sollevare le gambe (lavorano solo le braccia)','Movimento troppo rapido senza tenuta isometrica'],
+    },
+    {
+      name: 'Burpees',
+      video: 'wB2YtIuaLi4',
+      phases: [
+        { label: 'Fase 1', sets: '—' },
+        { label: 'Fase 2', sets: '3×5' },
+        { label: 'Fase 3+', sets: '3×8' },
+      ],
+      tips: ['Squat → mani a terra → salto piedi indietro → push-up → salto piedi avanti → salto in alto','Ogni fase del movimento controllata','Atterraggio morbido sulle ginocchia leggermente piegate','Respira: espira nel salto, inspira nella discesa'],
+      mistakes: ['Saltare il push-up (escursione completa)','Schiena inarcata nella fase di plank','Atterraggio duro (rischio ginocchia)','Sacrificare la tecnica per la velocità'],
+    },
+    {
+      name: 'Mobilità 90/90',
+      video: 'g4njO3POUgI',
+      phases: [{ label: 'Tutte le fasi', sets: '2 minuti per lato' }],
+      tips: ['Seduto a terra, entrambe le ginocchia a 90 gradi','Gamba anteriore: coscia davanti, tibia di lato','Gamba posteriore: coscia di lato, tibia dietro','Busto eretto, inclina il busto verso la gamba anteriore'],
+      mistakes: ['Compensare con la schiena (inclinazione laterale)','Ginocchio che non arriva a 90° — adattare la posizione','Forzare se c\'è dolore (solo stretching, non dolore)','Non alternare i lati'],
+    },
+  ],
+  stretch_upper: [
+    { name: 'Stretch pettorale (alla porta)', video: 'M850sCj9LHQ', phases: [{ label: 'Tutte le fasi', sets: '30s per lato × 2' }], tips: ['Avambraccio appoggiato allo stipite, gomito all\'altezza della spalla','Fai un piccolo passo avanti con il piede dello stesso lato','Senti lo stretch nella parte anteriore del petto e della spalla','Mantieni la posizione e respira profondamente'], mistakes: ['Ruotare il busto per compensare (deve restare dritto)','Gomito troppo alto o troppo basso rispetto alla spalla','Forzare troppo — lo stretch deve essere piacevole, non doloroso','Trattenere il respiro'] },
+    { name: 'Stretch spalla cross-body', video: '1Sfl3iYM1Jg', phases: [{ label: 'Tutte le fasi', sets: '30s per lato × 2' }], tips: ['Porta il braccio disteso orizzontalmente davanti al petto','Con l\'altro braccio premi il gomito verso il corpo','Senti lo stretch nella parte posteriore della spalla','Mantieni la spalla rilassata, non alzarla verso l\'orecchio'], mistakes: ['Ruotare il busto nella direzione dello stretch','Premere sull\'avambraccio invece che sopra il gomito','Alzare la spalla — tienila bassa e rilassata','Forzare troppo velocemente'] },
+    { name: 'Stretch tricipiti overhead', video: 'cPTrm13hSSo', phases: [{ label: 'Tutte le fasi', sets: '30s per lato × 2' }], tips: ['Porta il braccio piegato dietro la testa, mano tra le scapole','Con l\'altra mano spingi delicatamente il gomito verso il basso','Tieni il busto eretto e il core attivo','Respira profondamente durante la tenuta'], mistakes: ['Inclinare il busto lateralmente per compensare','Spingere troppo forte il gomito','Inarcare la schiena','Non mantenere la posizione abbastanza a lungo'] },
+    { name: 'Child\'s pose (stretch dorsali)', video: 'GRUbJjv8tBs', phases: [{ label: 'Tutte le fasi', sets: '45s × 2' }], tips: ['Ginocchia a terra divaricate, sedere sui talloni','Braccia distese in avanti, fronte appoggiata al pavimento','Spingi le mani in avanti per sentire lo stretch nei dorsali','Respira profondamente, rilascia la tensione ad ogni espirazione'], mistakes: ['Sedere che si alza dai talloni','Spalle in tensione (devono rilassarsi verso il pavimento)','Non distendere completamente le braccia','Trattenere il respiro'] },
+    { name: 'Cat-cow (mobilità colonna)', video: 'xyNwxiuERXc', phases: [{ label: 'Tutte le fasi', sets: '10 ripetizioni lente' }], tips: ['Posizione quadrupedica: mani sotto le spalle, ginocchia sotto le anche','Cat: espira, arrotonda la schiena verso il soffitto, mento al petto','Cow: inspira, inarca la schiena, petto in fuori, sguardo in alto','Movimento fluido e sincronizzato con il respiro'], mistakes: ['Movimento troppo veloce (deve essere lento e controllato)','Braccia piegate o mani non allineate alle spalle','Forzare l\'iperestensione cervicale nella fase cow','Non sincronizzare il respiro al movimento'] },
+    { name: 'Stretch polsi e avambracci', video: 'rDqYtzYE-n8', phases: [{ label: 'Tutte le fasi', sets: '20s per direzione × 2' }], tips: ['Braccio disteso in avanti, palmo verso l\'alto','Con l\'altra mano tira le dita verso il basso (flessori)','Poi palmo verso il basso, tira le dita verso il corpo (estensori)','Fondamentale dopo push-up e plank per prevenire dolori ai polsi'], mistakes: ['Piegare il gomito durante lo stretch (braccio deve restare disteso)','Tirare troppo forte le dita','Ignorare questo stretch (i polsi sono molto sollecitati nel calisthenics)','Non fare entrambe le direzioni (flessione + estensione)'] },
+  ],
+  stretch_full: [
+    { name: 'Stretch quadricipiti in piedi', video: 'kia2OzZiwqw', phases: [{ label: 'Tutte le fasi', sets: '30s per gamba × 2' }], tips: ['In piedi, piega il ginocchio e afferra la caviglia dietro di te','Tira il tallone verso il gluteo, ginocchia vicine','Mantieni il busto eretto e il bacino in retroversione','Appoggiati a un muro se serve per l\'equilibrio'], mistakes: ['Ginocchio che si apre lateralmente (tienilo allineato)','Inarcare la schiena per compensare','Afferrare il piede invece della caviglia','Inclinarsi in avanti (perdi lo stretch sul quadricipite)'] },
+    { name: 'Stretch ischiocrurali in piedi', video: '9ESpoUPqpFw', phases: [{ label: 'Tutte le fasi', sets: '30s per gamba × 2' }], tips: ['In piedi, appoggia il tallone su un rialzo (gradino, panca bassa)','Gamba distesa, punta del piede verso l\'alto','Inclina il busto in avanti mantenendo la schiena dritta','Senti lo stretch nella parte posteriore della coscia'], mistakes: ['Arrotondare la schiena per arrivare più in basso','Piegare il ginocchio della gamba in stretch','Rialzo troppo alto (inizia basso e aumenta gradualmente)','Rimbalzare invece di tenere la posizione statica'] },
+    { name: 'Stretch flessori dell\'anca (affondo)', video: '6o-GpPIGR5w', phases: [{ label: 'Tutte le fasi', sets: '30s per lato × 2' }], tips: ['Un ginocchio a terra, l\'altro piede avanti con ginocchio a 90°','Spingi il bacino in avanti e verso il basso','Busto eretto, mani sulla coscia davanti o sui fianchi','Senti lo stretch nella parte anteriore dell\'anca (gamba dietro)'], mistakes: ['Ginocchio anteriore che supera la punta del piede','Inarcare la schiena (mantieni il core attivo)','Non spingere abbastanza il bacino in avanti','Inclinarsi in avanti col busto'] },
+    { name: 'Pigeon pose (glutei e anche)', video: 'dVcF97Ddo-8', phases: [{ label: 'Tutte le fasi', sets: '45s per lato × 2' }], tips: ['Gamba anteriore piegata a terra, tibia il più parallela possibile','Gamba posteriore distesa dietro di te','Inclina il busto in avanti sulle braccia o sulla fronte','Lo stretch si sente nel gluteo della gamba anteriore'], mistakes: ['Bacino che ruota (mantienilo squadrato)','Forzare la tibia a essere parallela se fa male al ginocchio','Collassare sulla gamba anteriore senza controllo','Trattenere il respiro — respira profondamente nel gluteo'] },
+    { name: 'Stretch polpacci al muro', video: 'YTYQo4WvJHA', phases: [{ label: 'Tutte le fasi', sets: '30s per gamba × 2' }], tips: ['Mani al muro, un piede avanti piegato, l\'altro dietro disteso','Tallone posteriore ben piantato a terra','Spingi il bacino in avanti per aumentare lo stretch','Variante: piega leggermente il ginocchio posteriore per il soleo'], mistakes: ['Tallone posteriore che si alza dal pavimento','Piede posteriore ruotato (punta dritta in avanti)','Non fare la variante col ginocchio piegato (lavora un muscolo diverso)','Rimbalzare invece di mantenere la posizione'] },
+    { name: 'Torsione spinale da seduto', video: 'r5JuFoNzOU8', phases: [{ label: 'Tutte le fasi', sets: '30s per lato × 2' }], tips: ['Seduto a terra, una gamba distesa, l\'altra piegata con piede oltre il ginocchio opposto','Ruota il busto verso il ginocchio piegato','Gomito opposto all\'esterno del ginocchio piegato per approfondire','Mantieni la schiena dritta e alta durante la rotazione'], mistakes: ['Arrotondare la schiena (siediti su un cuscino se necessario)','Forzare la rotazione con le braccia (deve venire dal core)','Alzare la spalla verso l\'orecchio','Non fare entrambi i lati (simmetria fondamentale)'] },
+  ],
+};
+
+let currentPhase = 1;
+let currentTab = 'upper';
+let timerInterval = null;
+let timerRunning = false;
+let timerSeconds = 60;
+
+const TODAY = new Date().toISOString().slice(0, 10);
+
+function getChecked() {
+  const data = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'checked') || '{}');
+  if (data._date !== TODAY) return { _date: TODAY, upper: [], full: [], stretch_upper: [], stretch_full: [] };
+  if (!data.stretch_upper) data.stretch_upper = [];
+  if (!data.stretch_full) data.stretch_full = [];
+  return data;
+}
+function saveChecked(data) { localStorage.setItem(STORAGE_PREFIX + 'checked', JSON.stringify(data)); }
+
+function getWorkoutLog() {
+  return JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'log') || '[]');
+}
+
+function appendWorkoutLog(entry) {
+  const log = getWorkoutLog();
+  const idx = log.findIndex(e => e.date === entry.date && e.type === entry.type);
+  if (idx !== -1) log.splice(idx, 1);
+  log.push(entry);
+  if (log.length > 200) log.splice(0, log.length - 200);
+  localStorage.setItem(STORAGE_PREFIX + 'log', JSON.stringify(log));
+}
+
+function toggleCheck(tab, idx, evt) {
+  evt.stopPropagation();
+  const data = getChecked();
+  if (!data[tab]) data[tab] = [];
+  const pos = data[tab].indexOf(idx);
+  if (pos === -1) data[tab].push(idx); else data[tab].splice(pos, 1);
+  saveChecked(data);
+  renderExercises();
+}
+
+function setPhase(p) {
+  currentPhase = p;
+  document.querySelectorAll('.phase-bar button').forEach((b, i) => {
+    b.classList.toggle('active', i === p - 1);
+  });
+  renderExercises();
+}
+
+function showTab(tab) {
+  currentTab = tab;
+  const tabMap = { upper: 0, full: 1, stretch_upper: 2, stretch_full: 3 };
+  document.querySelectorAll('.tabs button').forEach((b, i) => {
+    b.classList.toggle('active', i === tabMap[tab]);
+  });
+  renderExercises();
+  const btn = document.getElementById('saveBtn');
+  const msg = document.getElementById('saveMsg');
+  btn.disabled = false;
+  btn.classList.remove('saved');
+  btn.textContent = 'Salva allenamento';
+  msg.textContent = '';
+}
+
+const TYPE_LABELS = { upper: 'Upper Body', full: 'Full Body', stretch_upper: 'Stretch Upper', stretch_full: 'Stretch Lower' };
+const DAYS_SHORT = ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'];
+const DAYS_LONG = ['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
+const MONTHS = ['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
+
+function fmtDate(d) {
+  const [y, m, dd] = d.split('-');
+  return `${DAYS_SHORT[new Date(d).getDay()]} ${dd}/${m}`;
+}
+function fmtDateLong(d) {
+  const [y, m, dd] = d.split('-');
+  return `${DAYS_LONG[new Date(d).getDay()]} ${parseInt(dd)} ${MONTHS[parseInt(m)-1]} ${y}`;
+}
+
+function renderExercises() {
+  const exercises = EXERCISES[currentTab];
+  const container = document.getElementById('content');
+  const checked = getChecked();
+  const doneList = checked[currentTab] || [];
+  const doneCount = doneList.length;
+  const total = exercises.length;
+  const pct = Math.round((doneCount / total) * 100);
+
+  const log = getWorkoutLog();
+  const tabLog = log.filter(e => e.type === currentTab).slice(-3).reverse();
+  const histHtml = tabLog.length > 0
+    ? `<div class="history-box">Ultime sessioni: ${tabLog.map(e => fmtDate(e.date) + ' (' + e.completed + '/' + e.total + ')').join(' · ')}</div>`
+    : `<div class="history-box">Nessuna sessione completata</div>`;
+
+  const isStretch = currentTab.startsWith('stretch_');
+  const dayLabels = {
+    upper: 'Riscaldamento 5 min (jumping jacks, corsa sul posto, rotazioni braccia)',
+    full: 'Riscaldamento 5 min (corsa sul posto, skip, rotazioni anche)',
+    stretch_upper: 'Stretching post allenamento Upper Body — tieni ogni posizione e respira',
+    stretch_full: 'Stretching post allenamento Full Body — tieni ogni posizione e respira',
+  };
+
+  document.querySelector('.phase-bar').style.display = isStretch ? 'none' : 'flex';
+  document.querySelector('.rest-info').textContent = isStretch ? 'Tieni ogni posizione per il tempo indicato' : 'Recupero tra le serie: 60-90 secondi';
+
+  container.innerHTML =
+    `<div class="progress-bar">
+      <span class="progress-text">${doneCount}/${total}</span>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <span class="progress-text">${pct === 100 ? 'Completo!' : ''}</span>
+    </div>` + histHtml +
+    `<div class="day-header">${dayLabels[currentTab]}</div>` +
+    exercises.map((ex, idx) => {
+      const phaseIdx = currentPhase - 1;
+      const badgeClass = `badge-phase${currentPhase}`;
+      const isDone = doneList.includes(idx);
+      const setsRows = ex.phases.map((p, pi) =>
+        `<tr class="${pi === phaseIdx ? 'current-phase' : ''}"><td>${p.label}</td><td>${p.sets}</td></tr>`
+      ).join('');
+      const currentSets = ex.phases[Math.min(phaseIdx, ex.phases.length - 1)];
+      return `
+        <div class="exercise ${isDone ? 'done' : ''}" id="ex-${currentTab}-${idx}">
+          <div class="exercise-header" onclick="toggleExercise('${currentTab}', ${idx})">
+            <button class="check-btn ${isDone ? 'checked' : ''}" onclick="toggleCheck('${currentTab}', ${idx}, event)">${isDone ? '✓' : ''}</button>
+            <h3>${idx + 1}. ${ex.name}</h3>
+            <span class="badge ${badgeClass}">${currentSets.sets}</span>
+          </div>
+          <div class="exercise-body">
+            <div class="video-container">
+              <div class="video-placeholder" onclick="loadVideo(this, '${ex.video}')">
+                <img src="https://img.youtube.com/vi/${ex.video}/hqdefault.jpg" alt="${ex.name}">
+                <div class="play-btn"></div>
+              </div>
+            </div>
+            <table class="sets-table"><tr><th>Progressione</th><th>Serie × Reps</th></tr>${setsRows}</table>
+            <div class="tips"><h4>Tecnica corretta</h4><ul>${ex.tips.map(t => `<li>${t}</li>`).join('')}</ul></div>
+            <div class="mistakes"><h4>Errori da evitare</h4><ul>${ex.mistakes.map(m => `<li>${m}</li>`).join('')}</ul></div>
+          </div>
+        </div>`;
+    }).join('') +
+    (isStretch ? '' : '<div class="day-header">Stretching finale 5 min → usa il tab Stretch corrispondente</div>');
+}
+
+function toggleExercise(tab, idx) {
+  document.getElementById(`ex-${tab}-${idx}`).classList.toggle('open');
+}
+
+function loadVideo(placeholder, videoId) {
+  placeholder.parentElement.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+}
+
+function toggleTimer() {
+  const btn = document.getElementById('timerBtn');
+  const display = document.getElementById('timerDisplay');
+  if (timerRunning) {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    display.style.display = 'none';
+    btn.textContent = 'Recupero 60s';
+    btn.style.borderColor = 'var(--accent)';
+    btn.style.color = 'var(--accent)';
+    return;
+  }
+  timerSeconds = 60;
+  timerRunning = true;
+  display.style.display = 'block';
+  display.textContent = '01:00';
+  btn.textContent = 'Stop';
+  btn.style.borderColor = 'var(--green)';
+  btn.style.color = 'var(--green)';
+  timerInterval = setInterval(() => {
+    timerSeconds--;
+    if (timerSeconds <= 0) {
+      clearInterval(timerInterval);
+      timerRunning = false;
+      display.textContent = '00:00';
+      display.style.color = 'var(--accent)';
+      btn.textContent = 'Recupero 60s';
+      btn.style.borderColor = 'var(--accent)';
+      btn.style.color = 'var(--accent)';
+      if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+      setTimeout(() => { display.style.display = 'none'; display.style.color = 'var(--green)'; }, 3000);
+      return;
+    }
+    const m = Math.floor(timerSeconds / 60);
+    const s = timerSeconds % 60;
+    display.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  }, 1000);
+}
+
+async function saveWorkout() {
+  const btn = document.getElementById('saveBtn');
+  const msg = document.getElementById('saveMsg');
+  const checked = getChecked();
+  const doneList = checked[currentTab] || [];
+  const exercises = EXERCISES[currentTab];
+
+  if (doneList.length === 0) {
+    msg.style.color = 'var(--accent)';
+    msg.textContent = 'Nessun esercizio completato da salvare';
+    return;
+  }
+
+  const now = new Date();
+  const payload = {
+    user: USER_NAME,
+    date: TODAY,
+    time: now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' }),
+    type: currentTab,
+    phase: currentPhase,
+    exercises: exercises.map((ex, idx) => ({
+      name: ex.name,
+      sets: ex.phases[Math.min(currentPhase - 1, ex.phases.length - 1)].sets,
+      done: doneList.includes(idx)
+    })),
+    completed: doneList.length,
+    total: exercises.length
+  };
+
+  appendWorkoutLog(payload);
+
+  btn.classList.add('saved');
+  btn.textContent = 'Salvato!';
+  msg.style.color = 'var(--green)';
+  msg.textContent = `${doneList.length}/${exercises.length} esercizi salvati`;
+  renderExercises();
+}
+
+function openCronologia() {
+  const log = getWorkoutLog();
+  const content = document.getElementById('cronoContent');
+
+  if (log.length === 0) {
+    content.innerHTML = '<div class="crono-empty">Nessun allenamento registrato.<br><br>Completa esercizi e premi<br>"Salva allenamento" per iniziare!</div>';
+    document.getElementById('cronoOverlay').classList.add('open');
+    return;
+  }
+
+  const totalWorkouts = log.length;
+  const totalExercises = log.reduce((s, e) => s + e.completed, 0);
+  const uniqueDays = [...new Set(log.map(e => e.date))].length;
+
+  const byDate = {};
+  log.forEach(entry => {
+    if (!byDate[entry.date]) byDate[entry.date] = [];
+    byDate[entry.date].push(entry);
+  });
+  const dates = Object.keys(byDate).sort().reverse();
+
+  let html = `<div class="crono-stats">
+    <div><div class="crono-stat-num">${totalWorkouts}</div><div class="crono-stat-label">Sessioni</div></div>
+    <div><div class="crono-stat-num">${uniqueDays}</div><div class="crono-stat-label">Giorni</div></div>
+    <div><div class="crono-stat-num">${totalExercises}</div><div class="crono-stat-label">Esercizi</div></div>
+  </div>`;
+
+  dates.forEach(date => {
+    html += `<div class="crono-day"><div class="crono-date">${fmtDateLong(date)}</div>`;
+    byDate[date].forEach(entry => {
+      const isComplete = entry.completed === entry.total;
+      const exerciseList = (entry.exercises || []).filter(e => e.done).map(e => e.name).join(', ');
+      html += `<div class="crono-entry">
+        <div class="crono-entry-head">
+          <span class="crono-type">${TYPE_LABELS[entry.type] || entry.type}</span>
+          <span class="crono-score" style="color:${isComplete ? 'var(--green)' : 'var(--yellow)'}">${entry.completed}/${entry.total}${isComplete ? ' ✓' : ''}</span>
+        </div>
+        ${entry.phase ? `<div class="crono-meta">Fase ${entry.phase} · ${entry.time || ''}</div>` : ''}
+        ${exerciseList ? `<div class="crono-exercises">${exerciseList}</div>` : ''}
+      </div>`;
+    });
+    html += '</div>';
+  });
+
+  content.innerHTML = html;
+  document.getElementById('cronoOverlay').classList.add('open');
+}
+
+function closeCronologia() {
+  document.getElementById('cronoOverlay').classList.remove('open');
+}
+
+renderExercises();
+</script>
+</body>
+</html>
