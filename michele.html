@@ -371,6 +371,31 @@ footer { text-align: center; padding: 24px; color: var(--muted); font-size: 0.75
 }
 .crono-stat-num { font-size: 1.8em; font-weight: 700; color: var(--accent); }
 .crono-stat-label { font-size: 0.75em; color: var(--muted); margin-top: 2px; }
+
+/* Piano Corsa */
+.oggi-banner { margin: 12px 16px 0; padding: 12px 16px; border-radius: 12px; background: var(--accent2); color:#fff; cursor:pointer; }
+.oggi-banner .ob-label { font-size:0.72em; opacity:0.85; text-transform:uppercase; letter-spacing:1px; }
+.oggi-banner .ob-act { font-size:1.1em; font-weight:700; margin-top:3px; }
+.oggi-banner .ob-det { font-size:0.92em; opacity:0.92; margin-top:2px; }
+.corsa-wrap { padding: 4px 0 12px; }
+.corsa-oggi { background: var(--accent2); color:#fff; border-radius:14px; padding:18px; margin-bottom:8px; }
+.corsa-oggi.done { opacity:0.65; }
+.corsa-oggi .co-date { font-size:0.78em; opacity:0.85; }
+.corsa-oggi .co-tipo { font-size:1.45em; font-weight:700; margin:6px 0; }
+.corsa-oggi .co-det { font-size:1.05em; opacity:0.95; }
+.corsa-check { margin-top:14px; display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,0.22); padding:9px 16px; border-radius:10px; cursor:pointer; border:none; color:#fff; font-size:0.95em; font-weight:600; }
+.corsa-sec-title { font-size:0.95em; color:var(--muted); margin:18px 4px 8px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; }
+.corsa-week { display:flex; flex-direction:column; gap:6px; }
+.corsa-row { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px; background:var(--card); }
+.corsa-row.today { outline:2px solid var(--accent); }
+.corsa-row.done { opacity:0.5; }
+.corsa-row .cr-day { width:56px; font-size:0.82em; color:var(--muted); flex-shrink:0; }
+.corsa-row .cr-icon { font-size:1.1em; }
+.corsa-row .cr-main { flex:1; min-width:0; }
+.corsa-row .cr-tipo { font-weight:600; font-size:0.9em; }
+.corsa-row .cr-det { font-size:0.8em; color:var(--muted); }
+.corsa-week-block { margin-bottom:14px; }
+.corsa-week-block h4 { font-size:0.82em; color:var(--accent); margin:0 4px 6px; }
 </style>
 </head>
 <body>
@@ -387,12 +412,14 @@ footer { text-align: center; padding: 24px; color: var(--muted); font-size: 0.75
     <button class="crono-btn" onclick="openCronologia()">Cronologia</button>
   </div>
 </header>
+<div class="oggi-banner" id="oggiBanner" onclick="showTab('corsa')"></div>
 
 <div class="tabs">
   <button class="active" onclick="showTab('upper')">Lun — Upper</button>
   <button onclick="showTab('full')">Gio — Full Body</button>
   <button onclick="showTab('stretch_upper')">Stretch Upper</button>
   <button onclick="showTab('stretch_full')">Stretch Lower</button>
+  <button onclick="showTab('corsa')">🏃 Corsa</button>
 </div>
 
 <div class="content" id="content"></div>
@@ -657,10 +684,14 @@ function setPhase(p) {
 
 function showTab(tab) {
   currentTab = tab;
-  const tabMap = { upper: 0, full: 1, stretch_upper: 2, stretch_full: 3 };
+  const tabMap = { upper: 0, full: 1, stretch_upper: 2, stretch_full: 3, corsa: 4 };
   document.querySelectorAll('.tabs button').forEach((b, i) => {
     b.classList.toggle('active', i === tabMap[tab]);
   });
+  const _isCorsa = tab === 'corsa';
+  var _ts = document.querySelector('.timer-section'); if(_ts) _ts.style.display = _isCorsa ? 'none' : '';
+  var _ss = document.querySelector('.save-section'); if(_ss) _ss.style.display = _isCorsa ? 'none' : '';
+  if (_isCorsa) { renderCorsa(); return; }
   renderExercises();
   const btn = document.getElementById('saveBtn');
   const msg = document.getElementById('saveMsg');
@@ -682,6 +713,75 @@ function fmtDate(d) {
 function fmtDateLong(d) {
   const [y, m, dd] = d.split('-');
   return `${DAYS_LONG[new Date(d).getDay()]} ${parseInt(dd)} ${MONTHS[parseInt(m)-1]} ${y}`;
+}
+
+// ===== PIANO CORSA — Maratona di Venezia =====
+const PIANO_CORSA = [{"data": "2026-06-16", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "8–10 km @ 6:00–6:15/km"}, {"data": "2026-06-17", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "6×1000 m @ 5:05/km"}, {"data": "2026-06-19", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "8 km @ 5:35/km"}, {"data": "2026-06-21", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "14 km @ 6:00/km"}, {"data": "2026-06-23", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "10 km @ 6:00/km"}, {"data": "2026-06-24", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "10×400 m @ 4:45/km"}, {"data": "2026-06-26", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "10 km @ 5:35/km"}, {"data": "2026-06-28", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "16 km @ 5:55/km"}, {"data": "2026-06-30", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "10–12 km @ 6:00/km"}, {"data": "2026-07-01", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "4×2000 m @ 5:15/km"}, {"data": "2026-07-03", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "10 km @ 5:35/km"}, {"data": "2026-07-05", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "18 km @ 5:55/km"}, {"data": "2026-07-07", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "12 km @ 6:00/km"}, {"data": "2026-07-08", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "6×1000 m @ 5:05/km"}, {"data": "2026-07-10", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "10–12 km @ 5:35/km"}, {"data": "2026-07-12", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "20 km @ 5:55/km MARTEDÌ — LENTO 14 km @ 6:00/km MERCOLEDÌ — RIPETUTE • 6×1000 m @ 5:00/km • 10×400 m @ 4:45/km • 4×2000 m @ 5:15/km VENERDÌ — MEDIO 10–12 km @ 5:30–5:40/km DOMENICA — LUNGO 22 → 28 km @ 5:55–5:50/km"}, {"data": "2026-07-14", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "14 km @ 6:00/km"}, {"data": "2026-07-15", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "6×1000 m @ 5:00/km"}, {"data": "2026-07-17", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "10 km @ 5:35/km"}, {"data": "2026-07-19", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "22 km @ 5:55/km"}, {"data": "2026-07-21", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "14 km @ 6:00/km"}, {"data": "2026-07-22", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "10×400 m @ 4:45/km"}, {"data": "2026-07-24", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "10–12 km @ 5:35/km"}, {"data": "2026-07-26", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "24 km @ 5:55/km"}, {"data": "2026-07-28", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "14 km @ 6:00/km"}, {"data": "2026-07-29", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "4×2000 m @ 5:15/km"}, {"data": "2026-07-31", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "12 km @ 5:30/km"}, {"data": "2026-08-02", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "26 km @ 5:50/km"}, {"data": "2026-08-04", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "14 km @ 6:00/km"}, {"data": "2026-08-05", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "6×1000 m @ 5:00/km"}, {"data": "2026-08-07", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "12 km @ 5:30/km"}, {"data": "2026-08-09", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "28 km @ 5:50/km"}, {"data": "2026-08-11", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "12 km @ 6:00/km"}, {"data": "2026-08-12", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "3×2000 m @ 5:10/km"}, {"data": "2026-08-14", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "12 km @ 5:30/km"}, {"data": "2026-08-16", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "24 km @ 5:50/km"}, {"data": "2026-08-18", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "12–14 km @ 6:00/km"}, {"data": "2026-08-19", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "4×2000 m @ 5:10/km"}, {"data": "2026-08-21", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "12 km @ 5:30/km"}, {"data": "2026-08-23", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "26 km @ 5:50/km"}, {"data": "2026-08-25", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "14 km @ 6:00/km"}, {"data": "2026-08-26", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "7×1000 m @ 5:00/km"}, {"data": "2026-08-28", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "12–14 km @ 5:30/km"}, {"data": "2026-08-30", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "28 km @ 5:50/km"}, {"data": "2026-09-01", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "14 km @ 6:00/km"}, {"data": "2026-09-02", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "3×2000 m @ 5:10/km"}, {"data": "2026-09-04", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "12 km @ 5:30/km"}, {"data": "2026-09-06", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "30 km @ 5:50/km"}, {"data": "2026-09-08", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "14 km @ 6:00/km"}, {"data": "2026-09-09", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "7×1000 m @ 5:00/km"}, {"data": "2026-09-11", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "12–14 km @ 5:30/km"}, {"data": "2026-09-13", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "30 km @ 5:50/km"}, {"data": "2026-09-15", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "14 km @ 6:00/km"}, {"data": "2026-09-16", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "10×400 m @ 4:45/km"}, {"data": "2026-09-18", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "14 km @ 5:30/km"}, {"data": "2026-09-20", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "32 km @ 5:50–5:45/km"}, {"data": "2026-09-22", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "14 km @ 6:00/km"}, {"data": "2026-09-23", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "4×2000 m @ 5:10/km"}, {"data": "2026-09-25", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "14 km @ 5:30/km"}, {"data": "2026-09-27", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "32 km @ 5:50/km"}, {"data": "2026-09-29", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "12–14 km @ 6:00/km"}, {"data": "2026-09-30", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "7×1000 m @ 5:00/km"}, {"data": "2026-10-02", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "12 km @ 5:30/km"}, {"data": "2026-10-04", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "30 km @ 5:50/km"}, {"data": "2026-10-06", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "10 km @ 6:00/km"}, {"data": "2026-10-07", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "6×400 m @ 4:45/km"}, {"data": "2026-10-09", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "8 km @ 5:35/km"}, {"data": "2026-10-12", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "20 km @ 5:55/km"}, {"data": "2026-10-13", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "8 km"}, {"data": "2026-10-14", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "4×400 m brillante"}, {"data": "2026-10-16", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "6 km"}, {"data": "2026-10-19", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "14 km"}, {"data": "2026-10-20", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "6 km"}, {"data": "2026-10-21", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "6×200 m brillante"}, {"data": "2026-10-23", "giorno": "Venerdì", "tipo": "SCIOLGIMENTO", "dettaglio": "4 km"}, {"data": "2026-10-25", "giorno": "Domenica", "tipo": "🏁 MARATONA DI VENEZIA", "dettaglio": "Ritmo: 5:40–5:45/km"}];
+const CORSA_ICONS = {'LENTO':'🟢','RIPETUTE':'🔴','MEDIO':'🟡','LUNGO':'🔵','SCIOLGIMENTO':'⚪'};
+function corsaIcon(t){ if(t.indexOf('MARATONA')>=0) return '🏁'; return CORSA_ICONS[t]||'🏃'; }
+function todayISO(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function isoOf(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function mondayOf(iso){ const d=new Date(iso+'T12:00:00'); const off=(d.getDay()+6)%7; d.setDate(d.getDate()-off); return d; }
+function getCorsaDone(){ return JSON.parse(localStorage.getItem(STORAGE_PREFIX+'corsa_done')||'{}'); }
+function saveCorsaDone(o){ localStorage.setItem(STORAGE_PREFIX+'corsa_done', JSON.stringify(o)); }
+function toggleCorsaDone(data){
+  const o=getCorsaDone(); const w=PIANO_CORSA.find(e=>e.data===data);
+  if(o[data]){ delete o[data]; }
+  else { o[data]=true; if(w) appendWorkoutLog({user:USER_NAME,date:data,time:new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}),type:'Corsa - '+w.tipo,exercises:[{name:w.dettaglio,done:true}],completed:1,total:1}); }
+  saveCorsaDone(o); renderCorsa(); updateOggiBanner();
+}
+function attivitaGiorno(iso){
+  const w=PIANO_CORSA.find(e=>e.data===iso);
+  if(w) return {kind:'corsa', tipo:w.tipo, det:w.dettaglio};
+  const dow=new Date(iso+'T12:00:00').getDay();
+  if(dow===1) return {kind:'calist', tipo:'Calisthenics - Upper', tab:'upper'};
+  if(dow===4) return {kind:'calist', tipo:'Calisthenics - Full Body', tab:'full'};
+  return {kind:'riposo', tipo:'Riposo'};
+}
+function updateOggiBanner(){
+  const el=document.getElementById('oggiBanner'); if(!el) return;
+  const a=attivitaGiorno(todayISO());
+  const icon=a.kind==='corsa'?corsaIcon(a.tipo):(a.kind==='calist'?'💪':'😴');
+  const det=a.kind==='corsa'?('<div class="ob-det">'+a.det+'</div>'):'';
+  el.innerHTML='<div class="ob-label">Oggi · '+fmtDateLong(todayISO())+'</div><div class="ob-act">'+icon+' '+a.tipo+'</div>'+det;
+}
+function corsaRow(iso,ag,done,today){
+  const d=new Date(iso+'T12:00:00');
+  const past=iso<today;
+  const cls='corsa-row'+(iso===today?' today':'')+((ag.kind==='corsa'&&done[iso])||past?' done':'');
+  const icon=ag.kind==='corsa'?corsaIcon(ag.tipo):(ag.kind==='calist'?'💪':'😴');
+  const det=ag.kind==='corsa'?ag.det:(ag.kind==='calist'?'Esercizi nel tab dedicato':'');
+  const check=(ag.kind==='corsa'&&done[iso])?'<div class="cr-icon">✓</div>':'';
+  return '<div class="'+cls+'"><div class="cr-day">'+DAYS_SHORT[d.getDay()]+' '+d.getDate()+'</div><div class="cr-icon">'+icon+'</div><div class="cr-main"><div class="cr-tipo">'+ag.tipo+'</div>'+(det?'<div class="cr-det">'+det+'</div>':'')+'</div>'+check+'</div>';
+}
+function renderCorsa(){
+  const c=document.getElementById('content');
+  const today=todayISO(); const done=getCorsaDone();
+  let html='<div class="corsa-wrap">';
+  const a=attivitaGiorno(today);
+  if(a.kind==='corsa'){
+    const d=done[today];
+    html+='<div class="corsa-oggi'+(d?' done':'')+'"><div class="co-date">Oggi · '+fmtDateLong(today)+'</div><div class="co-tipo">'+corsaIcon(a.tipo)+' '+a.tipo+'</div><div class="co-det">'+a.det+'</div><button class="corsa-check" onclick="toggleCorsaDone(\''+today+'\')">'+(d?'✓ Fatto':'Segna come fatto')+'</button></div>';
+  } else if(a.kind==='calist'){
+    html+='<div class="corsa-oggi"><div class="co-date">Oggi · '+fmtDateLong(today)+'</div><div class="co-tipo">💪 '+a.tipo+'</div><div class="co-det">Vai al tab corrispondente per gli esercizi</div></div>';
+  } else {
+    html+='<div class="corsa-oggi"><div class="co-date">Oggi · '+fmtDateLong(today)+'</div><div class="co-tipo">😴 Riposo</div><div class="co-det">Recupero - nessuna attività prevista</div></div>';
+  }
+  const next=PIANO_CORSA.find(e=>e.data>today);
+  if(next){ html+='<div class="corsa-sec-title">Prossimo allenamento</div>'+corsaRow(next.data,{kind:'corsa',tipo:next.tipo,det:next.dettaglio},done,today); }
+  html+='<div class="corsa-sec-title">Questa settimana</div><div class="corsa-week">';
+  const mon=mondayOf(today);
+  for(let i=0;i<7;i++){ const dd=new Date(mon); dd.setDate(mon.getDate()+i); const iso=isoOf(dd); html+=corsaRow(iso,attivitaGiorno(iso),done,today); }
+  html+='</div>';
+  html+='<div class="corsa-sec-title">Piano completo</div>';
+  let curWeek=null;
+  PIANO_CORSA.forEach(e=>{ const wk=isoOf(mondayOf(e.data));
+    if(wk!==curWeek){ if(curWeek!==null) html+='</div>'; curWeek=wk; const wd=new Date(wk+'T12:00:00'); html+='<div class="corsa-week-block"><h4>Settimana dal '+wd.getDate()+' '+MONTHS[wd.getMonth()]+'</h4>'; }
+    html+=corsaRow(e.data,{kind:'corsa',tipo:e.tipo,det:e.dettaglio},done,today);
+  });
+  if(curWeek!==null) html+='</div>';
+  html+='</div>';
+  c.innerHTML=html;
 }
 
 function renderExercises() {
@@ -886,6 +986,7 @@ function closeCronologia() {
 }
 
 renderExercises();
+updateOggiBanner();
 </script>
 </body>
 </html>
