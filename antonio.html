@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calisthenics — Lisi</title>
+<title>Calisthenics — Antonio</title>
 <style>
 :root {
   --bg: #0f0f0f;
   --card: #1a1a2e;
-  --accent: #42a5f5;
-  --accent2: #1565c0;
+  --accent: #ff7043;
+  --accent2: #bf360c;
   --text: #eee;
   --muted: #888;
   --green: #4ecca3;
@@ -23,7 +23,7 @@ body {
   min-height: 100vh;
 }
 header {
-  background: linear-gradient(135deg, var(--accent2), #0d47a1);
+  background: linear-gradient(135deg, var(--accent2), #4e342e);
   padding: 20px 16px 12px;
   text-align: center;
   position: sticky;
@@ -206,7 +206,7 @@ header .subtitle { color: rgba(255,255,255,0.6); font-size: 0.85em; }
 .play-btn {
   position: absolute;
   width: 60px; height: 60px;
-  background: rgba(66,165,245,0.9);
+  background: rgba(255,112,67,0.9);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -251,7 +251,7 @@ header .subtitle { color: rgba(255,255,255,0.6); font-size: 0.85em; }
 .tips ul { list-style: none; font-size: 0.85em; line-height: 1.6; }
 .tips ul li::before { content: '\2713 '; color: var(--green); }
 .mistakes {
-  background: rgba(66,165,245,0.1);
+  background: rgba(255,112,67,0.1);
   border-left: 3px solid var(--accent);
   padding: 10px 12px;
   border-radius: 0 8px 8px 0;
@@ -313,7 +313,7 @@ footer { text-align: center; padding: 24px; color: var(--muted); font-size: 0.75
 .crono-overlay.open { display: block; }
 .crono-header {
   position: sticky; top: 0;
-  background: linear-gradient(135deg, var(--accent2), #0d47a1);
+  background: linear-gradient(135deg, var(--accent2), #4e342e);
   padding: 20px 16px;
   display: flex;
   justify-content: space-between;
@@ -401,8 +401,8 @@ footer { text-align: center; padding: 24px; color: var(--muted); font-size: 0.75
 <body>
 
 <header>
-  <h1>Calisthenics — Lisi</h1>
-  <div class="subtitle">Corpo libero + Maratona Venezia · obiettivo 3h30 (5:00/km)</div>
+  <h1>Calisthenics — Antonio</h1>
+  <div class="subtitle">Corpo libero + Maratona Venezia · finisher (7:00–7:30/km)</div>
   <div class="header-buttons">
     <div class="phase-bar">
       <button class="active" onclick="setPhase(1)">Fase 1</button>
@@ -435,20 +435,20 @@ footer { text-align: center; padding: 24px; color: var(--muted); font-size: 0.75
   <div class="save-msg" id="saveMsg"></div>
 </div>
 
-<footer>Calisthenics App — Lisi</footer>
+<footer>Calisthenics App — Michele</footer>
 
 <!-- Cronologia overlay -->
 <div class="crono-overlay" id="cronoOverlay">
   <div class="crono-header">
-    <h2>Cronologia — Lisi</h2>
+    <h2>Cronologia — Michele</h2>
     <button class="crono-close" onclick="closeCronologia()">&times;</button>
   </div>
   <div class="crono-content" id="cronoContent"></div>
 </div>
 
 <script>
-const STORAGE_PREFIX = 'calisthenics_lisi_';
-const USER_NAME = 'lisi';
+const STORAGE_PREFIX = 'calisthenics_antonio_';
+const USER_NAME = 'antonio';
 
 const EXERCISES = {
   upper: [
@@ -716,7 +716,7 @@ function fmtDateLong(d) {
 }
 
 // ===== PIANO CORSA — Maratona di Venezia =====
-const PIANO_CORSA = [{"data": "2026-06-16", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "8 km @ 5:35–5:45"}, {"data": "2026-06-17", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "6×400m (6 km) @ 4:30"}, {"data": "2026-06-19", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "5 km progressivo 5:40→5:15"}, {"data": "2026-06-21", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "12 km @ 5:40–5:30"}, {"data": "2026-06-23", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "8 km @ 5:35–5:45"}, {"data": "2026-06-24", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "6×500m (7 km) @ 4:25–4:30"}, {"data": "2026-06-26", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "6 km @ 5:15–5:20"}, {"data": "2026-06-28", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "14 km @ 5:35–5:25"}, {"data": "2026-06-30", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "10 km @ 5:35–5:45"}, {"data": "2026-07-02", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "6×600m (8 km) @ 4:25–4:30"}, {"data": "2026-07-03", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "8 km @ 5:10–5:15"}, {"data": "2026-07-05", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "16 km @ 5:30–5:20"}, {"data": "2026-07-07", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "10 km @ 5:35–5:45"}, {"data": "2026-07-09", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "5×800m (8 km) @ 4:25–4:30"}, {"data": "2026-07-10", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "8 km @ 5:10"}, {"data": "2026-07-12", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "18 km @ 5:30–5:20"}, {"data": "2026-07-14", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "10 km @ 5:35–5:45"}, {"data": "2026-07-16", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "6×800m (8 km) @ 4:20–4:25"}, {"data": "2026-07-17", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "8 km @ 5:05–5:10"}, {"data": "2026-07-19", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "20 km @ 5:30–5:20"}, {"data": "2026-07-21", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "10 km @ 5:30–5:40"}, {"data": "2026-07-23", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "6×1000m (10 km) @ 4:20–4:25"}, {"data": "2026-07-24", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "8 km @ 5:05"}, {"data": "2026-07-26", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "22 km @ 5:30–5:20"}, {"data": "2026-07-28", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "10 km @ 5:30–5:40"}, {"data": "2026-07-30", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "6×1000m (10 km) @ 4:15–4:20"}, {"data": "2026-07-31", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "10 km @ 5:00–5:05"}, {"data": "2026-08-02", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "24 km @ 5:30–5:20"}, {"data": "2026-08-04", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "10 km @ 5:30–5:40"}, {"data": "2026-08-06", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "5×1200m (10 km) @ 4:20–4:25"}, {"data": "2026-08-07", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "10 km @ 5:00"}, {"data": "2026-08-09", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "26 km @ 5:30–5:20"}, {"data": "2026-08-11", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "12 km @ 5:35–5:45"}, {"data": "2026-08-13", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "6×1000m (10 km) @ 4:25–4:30"}, {"data": "2026-08-14", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "8 km @ 5:00–5:05"}, {"data": "2026-08-16", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "28 km @ 5:30–5:20"}, {"data": "2026-08-18", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "12 km @ 5:35–5:45"}, {"data": "2026-08-20", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "5×1200m (10 km) @ 4:25–4:30"}, {"data": "2026-08-21", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "8 km @ 5:00–5:05"}, {"data": "2026-08-23", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "30 km @ 5:30–5:20"}, {"data": "2026-08-25", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "12 km @ 5:35–5:45"}, {"data": "2026-08-27", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "4×1600m (10 km) @ 4:30"}, {"data": "2026-08-28", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "8 km @ 5:00–5:05"}, {"data": "2026-08-30", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "32 km @ 5:30–5:20"}, {"data": "2026-09-01", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "12 km @ 5:35–5:45"}, {"data": "2026-09-03", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "3×2000m (10 km) @ 4:35"}, {"data": "2026-09-04", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "8 km @ 5:00–5:05"}, {"data": "2026-09-07", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "34 km @ 5:30–5:20"}, {"data": "2026-09-08", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "10 km @ 5:35–5:45"}, {"data": "2026-09-10", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "6×400m (6 km) @ 4:30–4:35"}, {"data": "2026-09-11", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "6 km @ 5:15–5:20"}, {"data": "2026-09-14", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "30 km @ 5:35"}, {"data": "2026-09-15", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "12 km @ 5:35–5:45"}, {"data": "2026-09-17", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "5×1200m (10 km) @ 4:25–4:30"}, {"data": "2026-09-18", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "8 km @ 5:00–5:05"}, {"data": "2026-09-21", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "32 km @ 5:30–5:20"}, {"data": "2026-09-22", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "12 km @ 5:35–5:45"}, {"data": "2026-09-24", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "4×1600m (10 km) @ 4:30"}, {"data": "2026-09-25", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "8 km @ 5:00–5:05"}, {"data": "2026-09-28", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "34 km @ 5:30–5:20"}, {"data": "2026-09-29", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "12 km @ 5:35–5:45"}, {"data": "2026-10-01", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "6×1000m (10 km) @ 4:25–4:30"}, {"data": "2026-10-02", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "8 km @ 5:00–5:05"}, {"data": "2026-10-05", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "26 km @ 5:30–5:20"}, {"data": "2026-10-06", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "12 km @ 5:35–5:45"}, {"data": "2026-10-08", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "5×800m (8 km) @ 4:25"}, {"data": "2026-10-09", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "8 km @ 5:00–5:05"}, {"data": "2026-10-12", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "22 km @ 5:30–5:20"}, {"data": "2026-10-13", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "10 km @ 5:35–5:45"}, {"data": "2026-10-15", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "6×600m (8 km) @ 4:25"}, {"data": "2026-10-16", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "8 km @ 5:00–5:05"}, {"data": "2026-10-19", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "18 km @ 5:30–5:20"}, {"data": "2026-10-20", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "8 km @ 5:35–5:45"}, {"data": "2026-10-22", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "4×400m (5 km) @ 4:30"}, {"data": "2026-10-23", "giorno": "Venerdì", "tipo": "MEDIO", "dettaglio": "5 km @ 5:00–5:05"}, {"data": "2026-10-25", "giorno": "Domenica", "tipo": "🏁 MARATONA DI VENEZIA", "dettaglio": "ritmo gara 5:00/km"}];
+const PIANO_CORSA = [{"data": "2026-06-23", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "4 km @ 7:00–7:30/km"}, {"data": "2026-06-24", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "6×1' @ 6:30–6:40/km + 2' camminata"}, {"data": "2026-06-26", "giorno": "Venerdì", "tipo": "LENTO", "dettaglio": "4–5 km @ 7:00/km"}, {"data": "2026-06-28", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "6 km @ 7:00–7:30/km"}, {"data": "2026-06-30", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "5 km @ 7:00/km"}, {"data": "2026-07-01", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "8×1' @ 6:25–6:40/km + 2' camminata"}, {"data": "2026-07-03", "giorno": "Venerdì", "tipo": "LENTO", "dettaglio": "5 km @ 7:00/km"}, {"data": "2026-07-05", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "7 km @ 7:00–7:15/km"}, {"data": "2026-07-07", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "6 km @ 7:00/km"}, {"data": "2026-07-08", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "6×2' @ 6:30–6:45/km + 2' camminata"}, {"data": "2026-07-10", "giorno": "Venerdì", "tipo": "LENTO", "dettaglio": "5–6 km @ 7:00/km"}, {"data": "2026-07-12", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "8 km @ 7:00/km"}, {"data": "2026-07-14", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "6 km @ 7:00/km"}, {"data": "2026-07-15", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "8×2' @ 6:30–6:45/km + 2' camminata"}, {"data": "2026-07-17", "giorno": "Venerdì", "tipo": "LENTO", "dettaglio": "6 km @ 7:00/km"}, {"data": "2026-07-19", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "9 km @ 7:00/km"}, {"data": "2026-07-21", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "6–7 km @ 7:00/km"}, {"data": "2026-07-22", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "6×3' @ 6:25–6:40/km + 2' camminata"}, {"data": "2026-07-24", "giorno": "Venerdì", "tipo": "LENTO", "dettaglio": "6 km @ 7:00/km"}, {"data": "2026-07-26", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "10 km @ 7:00/km"}, {"data": "2026-07-28", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "7 km @ 7:00/km"}, {"data": "2026-07-29", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "8×2' @ 6:30–6:45/km + 2' camminata"}, {"data": "2026-07-31", "giorno": "Venerdì", "tipo": "LENTO", "dettaglio": "6–7 km @ 7:00/km"}, {"data": "2026-08-02", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "12 km @ 7:00/km"}, {"data": "2026-08-04", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "7 km @ 7:00/km"}, {"data": "2026-08-05", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "6×3' @ 6:25–6:40/km + 2' camminata"}, {"data": "2026-08-07", "giorno": "Venerdì", "tipo": "LENTO", "dettaglio": "7 km @ 7:00/km"}, {"data": "2026-08-09", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "13 km @ 7:00/km"}, {"data": "2026-08-11", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "7–8 km @ 7:00/km"}, {"data": "2026-08-12", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "8×3' @ 6:25–6:40/km + 2' camminata"}, {"data": "2026-08-14", "giorno": "Venerdì", "tipo": "LENTO", "dettaglio": "7 km @ 7:00/km"}, {"data": "2026-08-16", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "14 km @ 7:00/km"}, {"data": "2026-08-18", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "8 km @ 7:00/km"}, {"data": "2026-08-19", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "6×4' @ 6:35–6:55/km + 2' camminata"}, {"data": "2026-08-21", "giorno": "Venerdì", "tipo": "LENTO", "dettaglio": "7–8 km @ 7:00/km"}, {"data": "2026-08-23", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "16 km @ 7:00/km"}, {"data": "2026-08-25", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "8 km @ 7:00/km"}, {"data": "2026-08-26", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "8×3' @ 6:25–6:40/km + 2' camminata"}, {"data": "2026-08-28", "giorno": "Venerdì", "tipo": "LENTO", "dettaglio": "8 km @ 7:00/km"}, {"data": "2026-08-30", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "18 km @ 7:00/km"}, {"data": "2026-09-01", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "8 km @ 7:00/km"}, {"data": "2026-09-02", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "6×4' @ 6:35–6:55/km + 2' camminata"}, {"data": "2026-09-04", "giorno": "Venerdì", "tipo": "LENTO", "dettaglio": "8 km @ 7:00/km"}, {"data": "2026-09-06", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "20 km @ 7:00/km"}, {"data": "2026-09-08", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "8–9 km @ 7:00/km"}, {"data": "2026-09-09", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "8×3' @ 6:25–6:40/km + 2' camminata"}, {"data": "2026-09-11", "giorno": "Venerdì", "tipo": "LENTO", "dettaglio": "8 km @ 7:00/km"}, {"data": "2026-09-13", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "20 km @ 7:00/km"}, {"data": "2026-09-15", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "9 km @ 7:00/km"}, {"data": "2026-09-16", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "6×4' @ 6:35–6:55/km + 2' camminata"}, {"data": "2026-09-18", "giorno": "Venerdì", "tipo": "LENTO", "dettaglio": "8–9 km @ 7:00/km"}, {"data": "2026-09-20", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "22 km @ 7:00/km"}, {"data": "2026-09-22", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "9 km @ 7:00/km"}, {"data": "2026-09-23", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "8×3' @ 6:25–6:40/km + 2' camminata"}, {"data": "2026-09-25", "giorno": "Venerdì", "tipo": "LENTO", "dettaglio": "9 km @ 7:00/km"}, {"data": "2026-09-27", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "24 km @ 7:00/km"}, {"data": "2026-09-29", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "9 km @ 7:00/km"}, {"data": "2026-09-30", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "6×4' @ 6:35–6:55/km + 2' camminata"}, {"data": "2026-10-02", "giorno": "Venerdì", "tipo": "LENTO", "dettaglio": "9 km @ 7:00/km"}, {"data": "2026-10-04", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "26 km @ 7:00/km"}, {"data": "2026-10-06", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "8 km @ 7:00/km"}, {"data": "2026-10-07", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "6×3' @ 6:30–6:45/km + 2' camminata"}, {"data": "2026-10-09", "giorno": "Venerdì", "tipo": "LENTO", "dettaglio": "7 km @ 7:00/km"}, {"data": "2026-10-11", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "18 km @ 7:00/km"}, {"data": "2026-10-13", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "6 km @ 7:00/km"}, {"data": "2026-10-14", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "4×2' @ 6:35–6:50/km + 2' camminata"}, {"data": "2026-10-16", "giorno": "Venerdì", "tipo": "LENTO", "dettaglio": "5 km @ 7:00/km"}, {"data": "2026-10-18", "giorno": "Domenica", "tipo": "LUNGO", "dettaglio": "12 km @ 7:00/km"}, {"data": "2026-10-20", "giorno": "Martedì", "tipo": "LENTO", "dettaglio": "5 km @ 7:00/km"}, {"data": "2026-10-21", "giorno": "Mercoledì", "tipo": "RIPETUTE", "dettaglio": "4×1' @ 6:40–6:55/km"}, {"data": "2026-10-23", "giorno": "Venerdì", "tipo": "SCIOLGIMENTO", "dettaglio": "3 km @ 7:00/km"}, {"data": "2026-10-25", "giorno": "Domenica", "tipo": "🏁 MARATONA DI VENEZIA", "dettaglio": "Obiettivo: FINIRE (7:00–7:30/km)"}];
 const CORSA_ICONS = {'LENTO':'🟢','RIPETUTE':'🔴','MEDIO':'🟡','LUNGO':'🔵','SCIOLGIMENTO':'⚪'};
 function corsaIcon(t){ if(t.indexOf('MARATONA')>=0) return '🏁'; return CORSA_ICONS[t]||'🏃'; }
 function todayISO(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
